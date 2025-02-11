@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 
 mongoose
   .connect(
-    'mongodb+srv://temideewan:qAZZ95OEpiFxjLiw@cluster0.lv1sq.mongodb.net/'
+    process.env.MONGO_URI
   )
   .then(() => {
     console.log('Connected to MongoDB successfully');
