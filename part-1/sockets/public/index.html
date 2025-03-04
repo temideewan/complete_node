@@ -21,5 +21,67 @@
       />
       <button type="submit">Send</button>
     </form>
+    <div class="typing"></div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      const socket = io();
+      // get dom elements
+      const chat = document.getElementById('chat');
+      const usersList = document.getElementById('users');
+      const messageForm = document.getElementById('message-form');
+      const messageInput = document.getElementById('message-input');
+      const typingElement = document.querySelector('.typing');
+      let typingTimeout = null;
+
+      const userName = prompt('Enter your username');
+
+      socket.emit('join', userName);
+
+      socket.on('userJoined', (newUser) => {
+        addMessage(`${newUser} has joined the chat`);
+      });
+
+      socket.on('userLeft', (user) => {
+        addMessage(`${user} has left the chat`);
+      })
+
+      socket.on('userList', (users) => {
+        usersList.innerHTML = users.map((user) => `<li>${user}</li>`).join(' ');
+      });
+
+      socket.on('chatMessage', (message) => {
+        addMessage(`${message.userName}: ${message.message}`);
+        typingElement.textContent = ''
+      });
+
+      socket.on('userTyping', (user) => {
+        typingElement.textContent = `${user} is typing...`;
+      });
+
+      messageInput.addEventListener('input', (event) => {
+        socket.emit('userTyping', userName);
+      });
+
+      messageForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const message = messageInput.value.trim();
+        if (message) {
+          socket.emit('chatMessage', { userName, message });
+        }
+        messageInput.value = '';
+      });
+
+      function addMessage(input) {
+        const messageElement = document.createElement('div');
+        messageElement.textContent = input;
+        chat.appendChild(messageElement);
+
+        // scroll to the bottom of the chat container
+        chat.scrollTop = chat.scrollHeight;
+      }
+      function showTyping(userName) {
+        typingElement.textContent = `${userName} is typing...`;
+      }
+    </script>
   </body>
 </html>
