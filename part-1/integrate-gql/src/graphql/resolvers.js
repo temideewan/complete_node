@@ -1,36 +1,30 @@
 const products = require('../data/products.js');
+const Product = require('../models/Product.js');
 
 const resolvers = {
   Query: {
-    products: () => products,
-    product: (_, { id }) => products.find((prod) => prod.id == id),
+    products: async () => await Product.find({}),
+    product: async (_, { id }) => await Product.findById(id),
   },
   Mutation: {
-    createProduct: (_, { title, category, price, inStock }) => {
-      const newProduct = {
-        id: String(products.length + 1),
-        title,
-        category,
-        price,
-        inStock,
-      };
-
-      products.push(newProduct);
+    createProduct: async (_, args) => {
+      const newProduct = new Product(args);
+      await newProduct.save();
       return newProduct;
     },
-    deleteProduct:(_ , {id}) => {
-      const index = products.findIndex((product) => product.id === id);
-      if(index === -1) return false;
-      products.splice(index, 1)
-      return true
+    updateProduct: async (_, { id, title, inStock, price }) => {
+      const product = await Product.findByIdAndUpdate(id, { title, inStock, price}, {new: true});
+      if (!product) {
+        return null;
+      }
+      return product;
     },
-    updateProduct:(_, {id, ...updates}) => {
-      const index = products.findIndex((product) => product.id === id);
-      if(index === -1) return null;
-      const updatedProduct = {...products[index], ...updates};
-      products[index] = updatedProduct
-      return updatedProduct;
-    }
+    deleteProduct: async (_ , {id}) => {
+      const deletedProduct = await Product.findByIdAndDelete(id)
+      if(!deletedProduct) return false
+      return true;
+    },
+   
   },
 };
 
