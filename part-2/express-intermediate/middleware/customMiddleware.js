@@ -10,6 +10,6 @@ const requestLogger = (req, res, next) => {
 
 const addTimeStamp = (req,res,next) => {
   req.timeStamp = new Date().toISOString();
-  next
+  next()
 }
 module.exports = { requestLogger, addTimeStamp };
