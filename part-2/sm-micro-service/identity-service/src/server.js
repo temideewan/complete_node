@@ -73,10 +73,7 @@ app.use('/api/auth/register', sensitiveEndpointsLimiter);
 
 // routes
 
-app.use('/api/auth',(req,res,next) => {
-  logger.info('Hitting this particular endpoint')
-  next()
-}, routes);
+app.use('/api/auth', routes);
 
 // error handler
 

@@ -38,7 +38,7 @@ UserSchema.pre('save', async function (next) {
 });
 UserSchema.methods.comparePasswords = async function (inputPassword) {
   try {
-    await argon2.verify(this.password, inputPassword);
+    return await argon2.verify(this.password, inputPassword);
   } catch (error) {
     throw error;
   }

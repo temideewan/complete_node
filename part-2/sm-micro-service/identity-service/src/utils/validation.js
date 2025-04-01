@@ -9,5 +9,13 @@ const validateRegistration = (data) => {
 
   return Schema.validate(data);
 };
+const validateLogin = (data) => {
+  const Schema = Joi.object({
+    email: Joi.string().email().required(),
+    password: Joi.string().min(6).required(),
+  });
 
-module.exports = { validateRegistration };
+  return Schema.validate(data);
+};
+
+module.exports = { validateRegistration, validateLogin };
