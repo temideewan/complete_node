@@ -10,7 +10,7 @@ const registerUser = async (req, res) => {
     // validate the schema
     const { error } = validateRegistration(req.body);
     if (error) {
-      logger.warn('Validation error', error.details[0].message);
+      logger.warn(`Validation error: ${error.details[0].message}`);
       return res.status(400).json({
         success: false,
         message: error.details[0].message,
@@ -19,7 +19,7 @@ const registerUser = async (req, res) => {
     const { email, password, username } = req.body;
     let user = await User.findOne({ $or: [{ email }, { username }] });
     if (user) {
-      logger.warn('User already exists', error.details[0].message);
+      logger.warn(`User already exists`);
       return res.status(400).json({
         success: false,
         message: 'User already exists',

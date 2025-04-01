@@ -30,7 +30,8 @@ app.use(express.json());
 
 app.use((req, res, next) => {
   logger.info(`Received ${req.method} request to ${req.url}`);
-  logger.info(`Request body, ${req.body}`);
+  logger.info(`Request body`, req.body);
+  next()
 });
 
 // DDOs protection and rate limiting
@@ -72,7 +73,10 @@ app.use('/api/auth/register', sensitiveEndpointsLimiter);
 
 // routes
 
-app.use('/api/auth', routes);
+app.use('/api/auth',(req,res,next) => {
+  logger.info('Hitting this particular endpoint')
+  next()
+}, routes);
 
 // error handler
 
