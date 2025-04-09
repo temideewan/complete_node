@@ -6,9 +6,11 @@ const {rateLimit} = require('express-rate-limit');
 const cors = require('cors')
 const helmet = require('helmet')
 const postRoutes = require('./routes/post-routes')
+const { RedisStore } = require('rate-limit-redis');
 const errorHandler = require('./middleware/error-handler');
 const logger = require('./utils/logger')
 
+const app = express();
 const PORT = process.env.PORT || 3002;
 
 // connect to DB
@@ -65,9 +67,9 @@ app.use('/api/posts', (req,res,next ) => {
   next()
 }, postRoutes)
 
-
+app.use(errorHandler);
 app.listen(PORT, () => {
-  logger.info(`Identity service is running on port ${PORT}`);
+  logger.info(`Post service is running on port ${PORT}`);
 });
 
 // unhandled promise rejection
