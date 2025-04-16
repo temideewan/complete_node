@@ -63,6 +63,7 @@ app.use(
   proxy(process.env.IDENTITY_SERVICE_URL, {
     ...proxyOptions,
     proxyReqOptDecorator: (proxyReqOptions, srcReq) => {
+      console.log('Hitting identity service')
       proxyReqOptions.headers['Content-Type'] = 'application/json';
       return proxyReqOptions;
     },
@@ -101,6 +102,7 @@ app.use(
   proxy(process.env.MEDIA_SERVICE_URL, {
     ...proxyOptions,
     proxyReqOptDecorator: (proxyReqOptions, srcReq) => {
+      console.log('Hitting media service')
       proxyReqOptions.headers['x-user-id'] = srcReq.user.userId;
       if(!srcReq.headers['content-type'].startsWith("multipart/formdata")){
         proxyReqOptions.headers['Content-Type'] = 'application/json';
@@ -109,7 +111,7 @@ app.use(
     },
     userResDecorator: (proxyRes, proxyResData, userReq, userRes) => {
       logger.info(
-        `Response received from media service: ${proxyRes.statusCode}`
+        `Response received from Media service: ${proxyRes.statusCode}`
       );
       return proxyResData;
     },
