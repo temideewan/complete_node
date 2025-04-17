@@ -60,9 +60,9 @@ const sensitiveEndpointsLimiter = (maxRequests, minutes) => {
 };
 
 // rate limit endpoints
-app.post('/api/media/upload', sensitiveEndpointsLimiter(10, 10));
-
+// app.post('/api/media/upload', sensitiveEndpointsLimiter(10, 10));
 app.use('/api/media', mediaRoutes);
+
 
 app.use(errorHandler);
 app.listen(PORT, () => {

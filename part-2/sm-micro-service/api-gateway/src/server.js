@@ -102,9 +102,8 @@ app.use(
   proxy(process.env.MEDIA_SERVICE_URL, {
     ...proxyOptions,
     proxyReqOptDecorator: (proxyReqOptions, srcReq) => {
-      console.log('Hitting media service')
       proxyReqOptions.headers['x-user-id'] = srcReq.user.userId;
-      if(!srcReq.headers['content-type'].startsWith("multipart/formdata")){
+      if(!srcReq.headers['content-type'].startsWith("multipart/form-data")){
         proxyReqOptions.headers['Content-Type'] = 'application/json';
       }
       return proxyReqOptions;

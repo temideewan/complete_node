@@ -13,19 +13,25 @@ const uploadMedia = async (req, res) => {
       });
     }
 
-    const { originalName, mimeType } = req.file;
+    const { originalname, mimetype } = req.file;
     const userId = req.user.userId;
-    logger.info(`File details: name=${originalName}, type=${mimeType}`);
+    logger.info(`File details: name=${originalname}, type=${mimetype}`);
     logger.info(`Uploading to cloudinary`);
-
+    if (!originalname || !mimetype) {
+      logger.info('Invalid values for "originalname" and "mimetype"');
+      res.status(400).json({
+        success: false,
+        message: 'Invalid values for "originalname" and "mimetype"',
+      });
+    }
     const cloudinaryUploadResult = await uploadMediaToCloudinary(req.file);
     logger.info(
       `Cloudinary upload successful. Public Id: - ${cloudinaryUploadResult.public_id}`
     );
     const newlyCreatedMedia = new Media({
       publicId: cloudinaryUploadResult.public_id,
-      originalName,
-      mimeType,
+      originalName: originalname,
+      mimeType: mimetype,
       url: cloudinaryUploadResult.secure_url,
       userId,
     });

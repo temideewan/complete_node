@@ -11,6 +11,7 @@ router.post(
   '/upload',
   authenticateRequest,
   (req, res, next) => {
+    console.log('Hitting this endpoint')
     upload(req, res, function (err) {
       if (err instanceof multer.MulterError) {
         logger.error('Multer error while uploading file');
