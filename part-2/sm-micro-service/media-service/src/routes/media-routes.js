@@ -1,5 +1,5 @@
 const express = require('express');
-const { uploadMedia } = require('../controllers/media-controller');
+const { uploadMedia, getAllMedia } = require('../controllers/media-controller');
 const { authenticateRequest } = require('../middleware/auth-middleware');
 const logger = require('../utils/logger');
 const upload = require('../utils/multer');
@@ -11,7 +11,7 @@ router.post(
   '/upload',
   authenticateRequest,
   (req, res, next) => {
-    console.log('Hitting this endpoint')
+    console.log('Hitting this endpoint');
     upload(req, res, function (err) {
       if (err instanceof multer.MulterError) {
         logger.error('Multer error while uploading file');
@@ -40,4 +40,5 @@ router.post(
   },
   uploadMedia
 );
+router.get('/', authenticateRequest, getAllMedia);
 module.exports = router;
