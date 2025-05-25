@@ -13,6 +13,12 @@ const searchPostController = async (req, res) => {
         message: 'Search query cannot be empty',
       });
     }
+    const cacheKey = `search:${query}`
+    const cachedResult = await req.redisClient?.get(cacheKey)
+
+    if(cachedResult){
+      return res.json(JSON.parse(cachedResult));
+    }
     const results = await Search.find(
       {
         $text: { $search: query },
@@ -21,7 +27,8 @@ const searchPostController = async (req, res) => {
     )
       .sort({ score: { $meta: 'textScore' } })
       .limit(10);
-
+    // save search results in cache for 5 minutes in seconds (i.e 5 * 60 = 300)
+    await req.redisClient?.setex(cacheKey, 300, JSON.stringify(results));
     res.json(results);
   } catch (error) {
     logger.error('Error in searchPostController', error);

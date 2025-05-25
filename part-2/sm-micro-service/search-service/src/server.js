@@ -72,7 +72,14 @@ app.use(
   sensitiveEndpointsLimiter(MAX_NUMBER_OF_REQUESTS, MINUTES)
 );
 
-app.use('/api/search', searchRoutes);
+app.use(
+  '/api/search',
+  (req, res, next) => {
+    req.redisClient = redisClient;
+    next();
+  },
+  searchRoutes
+);
 
 app.use(errorHandler);
 
@@ -83,7 +90,7 @@ async function startServer() {
     // subscribe to events
     await consumeEvent('post.created', handlePostCreated);
     await consumeEvent('post.deleted', handlePostDeleted);
-     app.listen(PORT, () => {
+    app.listen(PORT, () => {
       logger.info(`Search service is running on port ${PORT}`);
     });
   } catch (e) {
