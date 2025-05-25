@@ -13,6 +13,8 @@ const { connectToRabbitMq } = require('./utils/rabbitmq');
 
 const app = express();
 const PORT = process.env.PORT || 3002;
+const MAX_NUMBER_OF_REQUESTS = 30;
+const MINUTES = 10;
 
 // connect to DB
 mongoose
@@ -61,7 +63,7 @@ const sensitiveEndpointsLimiter = (maxRequests, minutes) => {
 }
 
 // rate limit endpoints
-app.post('/api/post', sensitiveEndpointsLimiter(10, 10))
+app.post('/api/post', sensitiveEndpointsLimiter(MAX_NUMBER_OF_REQUESTS, MINUTES))
 
 app.use('/api/posts', (req,res,next ) => {
   req.redisClient = redisClient;
