@@ -17,6 +17,8 @@ async function query(text, params) {
     // execute time
     const duration = Date.now() - start;
     console.log(`Executed query:`, { text, duration, rows: result.rowCount });
+    // TODO: remove this line in an actual application
+    // await pool.end()
     return result
   } catch (error) {
     console.log(error);
