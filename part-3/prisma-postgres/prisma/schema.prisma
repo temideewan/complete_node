@@ -15,9 +15,18 @@ datasource db {
 }
 
 model Book {
-  id      Int    @id @default(autoincrement())
-  title   String
-  content String
-  published Boolean @default(false)
+  id            Int       @id @default(autoincrement())
+  title         String
+  content       String
+  published     Boolean   @default(false)
   publishedDate DateTime?
+
+  author   Author @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId Int
+}
+
+model Author {
+  id   Int    @id @default(autoincrement())
+  name String
+  book Book[]
 }
