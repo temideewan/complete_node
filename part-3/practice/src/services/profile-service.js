@@ -38,6 +38,21 @@ module.exports.getProfile = async (id) => {
     throw e;
   }
 };
+module.exports.getAllProfile = async (id, includeAppointments = false) => {
+  try {
+    if (!id) throw new Error('Please enter a valid id for the profile');
+    const profile = await prisma.profile.findMany({
+      include: {
+        appointments: includeAppointments,
+      },
+    });
+    if (!profile)
+      throw new Error('Something went wrong trying to retrieve the profile');
+    return profile;
+  } catch (e) {
+    throw e;
+  }
+};
 module.exports.deleteProfile = async (id) => {
   try {
     if (!id) throw new Error('Please enter a valid id for the profile');
@@ -50,6 +65,30 @@ module.exports.deleteProfile = async (id) => {
     if (!profile)
       throw new Error('Something went wrong trying to delete the profile');
     return profile;
+  } catch (e) {
+    throw e;
+  }
+};
+
+module.exports.updateProfile = async (id, { name, avatar }) => {
+  try {
+    const updatedProfile = await prisma.$transaction(async (prisma) => {
+      const profile = await prisma.profile.findUnique({ id });
+      if (!profile) throw new Error('Profile not found');
+      const updatedProfile = await prisma.profile.update({
+        where: { id: profile.id },
+        data: {
+          name: name || profile.name,
+          avatar: avatar || profile.avatar,
+        },
+      });
+      return updatedProfile;
+    });
+    if (!updatedProfile)
+      throw new Error(
+        'Something went wrong while trying to update the profile'
+      );
+    return updatedProfile;
   } catch (e) {
     throw e;
   }

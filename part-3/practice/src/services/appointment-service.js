@@ -1,3 +1,4 @@
+const { getPrismaPagination } = require('../utils/pagination');
 const prisma = require('../utils/prisma');
 
 module.exports.createAppointment = async ({
@@ -33,11 +34,9 @@ module.exports.createAppointment = async ({
 };
 
 module.exports.getAllAppointments = async ({ page = 1, limit = 10 }) => {
-  const skip = (page - 1) * limit;
   try {
     const allAppointments = prisma.appointment.findMany({
-      skip,
-      take: limit,
+      ...getPrismaPagination(page, limit),
     });
 
     if (!allAppointments) {
@@ -54,13 +53,11 @@ module.exports.getAllAppointmentsForAUser = async ({
   limit = 10,
   profileId,
 }) => {
-  const skip = (page - 1) * limit;
   try {
     if (!profileId)
       throw new Error('Please select a profile to get appointments');
     const allAppointments = prisma.appointment.findMany({
-      skip,
-      take: limit,
+      ...getPrismaPagination(page, limit),
       where: {
         profileId,
       },
@@ -103,4 +100,3 @@ module.exports.updateAppointment = async (
     throw e;
   }
 };
-
