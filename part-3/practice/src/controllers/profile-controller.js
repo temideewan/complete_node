@@ -1,3 +1,4 @@
+const { PrismaClientKnownRequestError } = require('@prisma/client/runtime/library');
 const {
   createProfile,
   deleteProfile,
@@ -37,6 +38,8 @@ module.exports.addProfile = async (req, res) => {
     }
     res.status(201).json({ success: true, data: newProfile });
   } catch (e) {
+    console.log(e instanceof PrismaClientKnownRequestError)
+    console.log(e.code)
     res.status(400).json({
       status: false,
       message:

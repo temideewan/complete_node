@@ -1,5 +1,5 @@
 const express = require('express');
-const { responseDecorator } = require('./middlewares/response-decorattor');
+const { responseDecorator } = require('./middlewares/response-decorator');
 require('dotenv').config();
 const appRouter = require('./routes/index');
 
@@ -12,9 +12,9 @@ app.get('/', (req, res) => {
   res.send('Hi there, Welcome to my server');
 });
 
+app.use(responseDecorator);
 app.use('/api/v1', appRouter);
 
-app.use(responseDecorator);
 app.listen(PORT, () => {
   console.log(`Server listening on port: ${PORT}`);
 });
