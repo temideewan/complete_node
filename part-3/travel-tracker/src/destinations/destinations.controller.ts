@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -44,13 +45,15 @@ export class DestinationsController {
     @Param('id') id: string,
     @Body() updateDestinationDto: UpdateDestinationDto,
   ) {
-    // if (!req.user || !req.user?.userId) {
-    //   throw new UnauthorizedException('User is not authorized to create this');
-    // }
     return this.destinationService.updateDestination(
       user.userId,
       +id,
       updateDestinationDto,
     );
+  }
+
+  @Delete(':id')
+  delete(@User() user: RequestUser, @Param('id') id: string) {
+    return this.destinationService.removeDestination(user.userId, +id);
   }
 }
