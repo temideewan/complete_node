@@ -20,7 +20,6 @@ register.registerMetric(httpRequestCounter);
 const PORT = process.env.PORT || 3000;
 
 // middleware to track api requests
-
 app.use((req,res,next) => {
   res.on('finish', () => {
     httpRequestCounter.inc({
